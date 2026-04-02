@@ -1,0 +1,112 @@
+/* ===== Global Gradient Theme Replacement ===== */
+:root {
+	--surface-bg: #ffffff;
+	--surface-soft: #f8f8fb;
+	--surface-border: #d9d9e4;
+	--surface-text: #000000;
+}
+
+html,
+body,
+#root {
+	background: var(--surface-bg) !important;
+	color: var(--surface-text) !important;
+}
+
+/* Force theme across common structural elements so legacy hardcoded colors are visually replaced. */
+:is(
+	main,
+	section,
+	article,
+	aside,
+	nav,
+	header,
+	footer,
+	div,
+	[class$='-page'],
+	[class*='-page '],
+	[class$='-shell'],
+	[class*='-shell '],
+	.card,
+	.panel,
+	.table-wrap,
+	table,
+	thead,
+	tbody,
+	tr,
+	th,
+	td,
+	form,
+	fieldset,
+	legend,
+	ul,
+	ol,
+	li
+) {
+	background-color: var(--surface-bg) !important;
+	background-image: none !important;
+	border-color: var(--surface-border) !important;
+	color: var(--surface-text) !important;
+}
+
+:is(h1, h2, h3, h4, h5, h6, p, label, strong, small, a) {
+	color: var(--surface-text) !important;
+}
+
+:is(span, td, th, li, .meta, .status, .activity-meta, .upload-browse-hint) {
+	color: var(--surface-text) !important;
+}
+
+:is(button, .btn, .upload-btn, .upload-doc-btn, .login-btn, .continue-btn, .save-btn, .submit-btn, .edit-btn, .back-btn) {
+	background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-middle) 55%, var(--gradient-end) 100%) !important;
+	background-image: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-middle) 55%, var(--gradient-end) 100%) !important;
+	border-color: var(--surface-border) !important;
+	color: var(--white) !important;
+	font-weight: 700 !important;
+	box-shadow: 0 8px 22px rgba(0, 0, 0, 0.18) !important;
+}
+
+:is(input, select, textarea) {
+	background: var(--surface-soft) !important;
+	border-color: var(--surface-border) !important;
+	color: var(--surface-text) !important;
+}
+
+:is(input, textarea)::placeholder {
+	color: #5f5f6b !important;
+}
+
+/* Icon surfaces use the requested gradient while keeping icon glyphs legible. */
+:is(
+	.top-nav button span,
+	.left-sidenav button span,
+	.field-icon,
+	.tick-pill,
+	.brand-icon,
+	.dashboard-upload-action svg,
+	.field-icon svg
+) {
+	background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-middle) 55%, var(--gradient-end) 100%) !important;
+	color: var(--white) !important;
+	border-color: transparent !important;
+}
+
+/* Keep upload action label readable on gradient background. */
+.dashboard-upload-action,
+.dashboard-upload-action * {
+	color: var(--white) !important;
+}
+
+/* Keep login helper actions as plain text links (no gradient button surface). */
+.login-page .text-action,
+.login-page .text-action.signup {
+	background: transparent !important;
+	background-image: none !important;
+	border: 0 !important;
+	box-shadow: none !important;
+	color: var(--black) !important;
+	font-weight: 800 !important;
+	padding: 0 !important;
+}
+
+
