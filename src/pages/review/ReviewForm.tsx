@@ -86,7 +86,7 @@ export function ReviewForm({
       <div className="actions">
         <button className="save-btn" disabled={isSavingDraft || isSubmitting || isLocked} onClick={() => onSaveDraft(flattenFields())}>{isSavingDraft ? 'Saving...' : 'Save Draft'}</button>
         {isLocked ? <button className="edit-btn" onClick={onEditRequested}>Edit</button> : null}
-        <button className="submit-btn" disabled={!isDraftSaved || isSavingDraft || isSubmitting || !isLocked} onClick={() => onSubmit(flattenFields())}>{isSubmitting ? 'Submitting...' : 'Submit For Verification'}</button>
+        <button className="submit-btn" disabled={!isDraftSaved || isSavingDraft || isSubmitting || !isLocked} onClick={() => onSubmit(flattenFields())}>{isSubmitting ? 'Submitting...' : 'Submit For Checker Verification'}</button>
       </div>
     </section>
   );

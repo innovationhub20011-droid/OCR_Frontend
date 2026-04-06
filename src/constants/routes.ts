@@ -6,5 +6,7 @@ export const APP_ROUTES = {
   uploadProcessing: '/dashboard/upload-documents/process',
   review: '/dashboard/review',
   verificationQueue: '/dashboard/verification-queue',
+  checkerQueue: '/dashboard/checker-queue',
+  settings: '/dashboard/settings',
   wildcard: '*'
 } as const;

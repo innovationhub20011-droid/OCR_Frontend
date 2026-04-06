@@ -79,7 +79,7 @@ export function ReviewText({
           disabled={!isDraftSaved || isSavingDraft || isSubmitting || !isLocked}
           onClick={() => onSubmit(blocks.map((block) => ({ key: block.id, value: block.formattedText })))}
         >
-          {isSubmitting ? 'Submitting...' : 'Submit For Verification'}
+          {isSubmitting ? 'Submitting...' : 'Submit For Checker Verification'}
         </button>
       </div>
     </section>

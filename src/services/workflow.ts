@@ -140,7 +140,7 @@ export class ExtractionWorkflowService {
       fileName: session?.fileName || '',
       scenario: session?.scenario || 'misc',
       status: 'Draft Saved',
-      checkerDecision: 'Pending Verification',
+      checkerDecision: 'Pending Checker',
       updatedAt: now,
       makerAction: `Draft saved with ${request.values.length} edited fields`
     };
@@ -149,7 +149,7 @@ export class ExtractionWorkflowService {
     return { savedAt: now, record };
   }
 
-  async submitForVerification(request: { values: Array<{ key: string; value: string }> }): Promise<{ savedAt: string; record: VerificationRecord }> {
+  async submitToChecker(request: { values: Array<{ key: string; value: string }> }): Promise<{ savedAt: string; record: VerificationRecord }> {
     const session = this.getCurrentSession();
     const now = new Date().toISOString();
     const record: VerificationRecord = {
@@ -157,8 +157,8 @@ export class ExtractionWorkflowService {
       documentLabel: session?.documentLabel || 'Document',
       fileName: session?.fileName || '',
       scenario: session?.scenario || 'misc',
-      status: 'Pending Verification',
-      checkerDecision: 'Pending Verification',
+      status: 'Pending Checker',
+      checkerDecision: 'Pending Checker',
       updatedAt: now,
       makerAction: `Submitted with ${request.values.length} reviewed fields`
     };
@@ -169,7 +169,60 @@ export class ExtractionWorkflowService {
 
   async getVerificationQueueRows(): Promise<VerificationRecord[]> {
     await wait(180);
-    return this.sortedVerificationRows().filter((row) => row.status === 'Pending Verification' && row.checkerDecision === 'Pending Verification');
+    return this.sortedVerificationRows().filter((row) => row.checkerDecision === 'Pending Checker');
+  }
+
+  async getCheckerQueueRows(): Promise<VerificationRecord[]> {
+    return this.getVerificationQueueRows();
+  }
+
+  async checkerVerify(recordId: string, checkerName: string): Promise<VerificationRecord | null> {
+    const row = this.verificationStore.get(recordId);
+    if (!row || row.checkerDecision !== 'Pending Checker') {
+      await wait(120);
+      return null;
+    }
+
+    const reviewedAt = new Date().toISOString();
+    const updated: VerificationRecord = {
+      ...row,
+      status: 'Verified',
+      checkerDecision: 'Verified',
+      checkerName,
+      checkerComment: 'Verified and approved by checker.',
+      checkerReviewedAt: reviewedAt,
+      updatedAt: reviewedAt,
+      makerAction: `${row.makerAction} | Checker verified`
+    };
+
+    this.verificationStore.set(recordId, updated);
+    await wait(220);
+    return updated;
+  }
+
+  async checkerReject(recordId: string, checkerName: string, comment: string): Promise<VerificationRecord | null> {
+    const row = this.verificationStore.get(recordId);
+    const trimmedComment = comment.trim();
+    if (!row || row.checkerDecision !== 'Pending Checker' || !trimmedComment) {
+      await wait(120);
+      return null;
+    }
+
+    const reviewedAt = new Date().toISOString();
+    const updated: VerificationRecord = {
+      ...row,
+      status: 'Rejected',
+      checkerDecision: 'Rejected',
+      checkerName,
+      checkerComment: trimmedComment,
+      checkerReviewedAt: reviewedAt,
+      updatedAt: reviewedAt,
+      makerAction: `${row.makerAction} | Checker rejected`
+    };
+
+    this.verificationStore.set(recordId, updated);
+    await wait(220);
+    return updated;
   }
 
   private async createOvdPayload(session: ExtractionSession): Promise<OvdReviewPayload> {

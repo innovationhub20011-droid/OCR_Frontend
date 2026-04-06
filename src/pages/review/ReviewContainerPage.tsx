@@ -54,7 +54,7 @@ export function ReviewContainerPage(): JSX.Element {
       return;
     }
     setIsSubmitting(true);
-    await extractionWorkflowService.submitForVerification({ values });
+    await extractionWorkflowService.submitToChecker({ values });
     setIsSubmitting(false);
     navigate(APP_ROUTES.verificationQueue);
   };

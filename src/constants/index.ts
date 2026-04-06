@@ -18,7 +18,8 @@ export const REVIEW_EXTRACTION_LOADING_LABEL = 'Extracting data, please wait...'
 
 export const TOP_NAV_ITEMS: TopNavItem[] = [
   { label: 'Dashboard', icon: 'D', route: APP_ROUTES.dashboard },
-  { label: 'Verification Queue', icon: 'V', route: APP_ROUTES.verificationQueue }
+  { label: 'Verification Queue', icon: 'V', route: APP_ROUTES.verificationQueue },
+  { label: 'Settings', icon: 'S', route: APP_ROUTES.settings }
 ];
 
 export const DOC_ASSET_MAP: Record<DocArtClass, string> = {

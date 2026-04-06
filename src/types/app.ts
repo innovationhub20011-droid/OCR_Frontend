@@ -1,4 +1,4 @@
-export type AppUserRole = 'User';
+export type AppUserRole = 'Maker' | 'Checker';
 
 export type DocumentScenario = 'ovd' | 'text' | 'form' | 'misc';
 
@@ -133,8 +133,8 @@ export interface VerificationRecord {
   documentLabel: string;
   fileName: string;
   scenario: DocumentScenario;
-  status: 'Draft Saved' | 'Pending Verification' | 'Verified' | 'Rejected';
-  checkerDecision: 'Pending Verification' | 'Verified' | 'Rejected';
+  status: 'Draft Saved' | 'Pending Checker' | 'Verified' | 'Rejected';
+  checkerDecision: 'Pending Checker' | 'Verified' | 'Rejected';
   checkerName?: string;
   checkerComment?: string;
   checkerReviewedAt?: string;
@@ -142,7 +142,7 @@ export interface VerificationRecord {
   makerAction: string;
 }
 
-export type TopNavLabel = 'Dashboard' | 'Verification Queue';
+export type TopNavLabel = 'Dashboard' | 'Verification Queue' | 'Settings';
 
 export interface TopNavItem {
   label: TopNavLabel;

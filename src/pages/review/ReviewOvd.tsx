@@ -64,7 +64,7 @@ export function ReviewOvd({
           disabled={!isDraftSaved || isSavingDraft || isSubmitting || !isLocked}
           onClick={() => onSubmit(fields.map((field) => ({ key: field.key, value: field.value })))}
         >
-          {isSubmitting ? 'Submitting...' : 'Submit For Verification'}
+          {isSubmitting ? 'Submitting...' : 'Submit For Checker Verification'}
         </button>
       </div>
     </section>

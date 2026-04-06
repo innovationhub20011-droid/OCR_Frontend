@@ -2,11 +2,18 @@ import { AppSessionUser, AppUserRole, LoginRequest, LoginResponse } from '../typ
 
 const DEMO_CREDENTIALS = [
   {
-    email: 'user.sbi@bank.com',
-    password: 'User@123',
-    id: 'SBI-USR-1024',
-    fullName: 'SBI User',
-    role: 'User' as const
+    email: 'maker.sbi@bank.com',
+    password: 'Maker@123',
+    id: 'SBI-MKR-1024',
+    fullName: 'SBI Maker',
+    role: 'Maker' as const
+  },
+  {
+    email: 'checker.sbi@bank.com',
+    password: 'Checker@123',
+    id: 'SBI-CHK-2048',
+    fullName: 'SBI Checker',
+    role: 'Checker' as const
   }
 ];
 
@@ -22,7 +29,7 @@ export class MockAuthApiService {
     );
 
     if (!matched) {
-      throw new Error('Invalid credentials. Use hardcoded demo credentials.');
+      throw new Error('Invalid credentials. Use hardcoded Maker/Checker credentials.');
     }
 
     await wait(900);
