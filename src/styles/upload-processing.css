@@ -35,19 +35,13 @@ background: #d1e3f6;
 overflow: hidden;
 }
 
-.upload-page .progress-fill {
-height: 100%;
-background: linear-gradient(90deg, #2f6fb2 0%, #58a7e6 100%);
-transition: width 0.25s ease;
-}
-
 .content-grid {
-margin-top: 20px;
-display: grid;
-grid-template-columns: minmax(340px, 640px);
-justify-content: center;
-gap: 22px;
-align-items: center;
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: minmax(340px, 640px);
+  justify-content: center;
+  gap: 22px;
+  align-items: center;
 }
 
 .content-grid.has-preview {

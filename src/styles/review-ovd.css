@@ -87,6 +87,13 @@
   font-weight: 600;
 }
 
+.field-input-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+
 .field-card input {
   width: 100%;
   border: 1px solid #bfd3ea;
@@ -95,6 +102,22 @@
   font-size: 0.94rem;
   color: #294b73;
   outline: none;
+}
+
+.sensitive-toggle {
+  width: auto;
+  min-width: 70px;
+  border: 1px solid #bed3ea;
+  border-radius: 8px;
+  background: #f4f9ff;
+  color: #355d89;
+  font-size: 0.82rem;
+  padding: 10px 12px;
+  cursor: pointer;
+}
+
+.sensitive-toggle:hover {
+  background: #e9f3ff;
 }
 
 .field-card input:focus {
@@ -106,28 +129,6 @@
   background: #f2f6fc;
   color: #4b6a8f;
   cursor: not-allowed;
-}
-
-.confidence {
-  border-radius: 999px;
-  padding: 4px 8px;
-  font-size: 0.76rem;
-  font-weight: 700;
-}
-
-.confidence.high {
-  background: #e8f7ed;
-  color: #2d7d49;
-}
-
-.confidence.mid {
-  background: #fff4df;
-  color: #8f6719;
-}
-
-.confidence.low {
-  background: #ffe8e8;
-  color: #a53f3f;
 }
 
 .actions {

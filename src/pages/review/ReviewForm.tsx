@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ReviewDraftValue, ReviewFormProps } from './ReviewShared';
+import { getDisplayValue, getSensitiveConfig } from '../../utils/sensitiveFieldUtils';
 
 export function ReviewForm({
   payload,
@@ -13,14 +14,18 @@ export function ReviewForm({
 }: ReviewFormProps): JSX.Element {
   const [workingPayload, setWorkingPayload] = useState(payload);
   const [activePageIndex, setActivePageIndex] = useState(0);
+  const [showSensitive, setShowSensitive] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     setWorkingPayload(payload);
     setActivePageIndex(0);
+    setShowSensitive({});
   }, [payload]);
 
   const flattenFields = (): ReviewDraftValue[] =>
     workingPayload.pages.flatMap((page) => page.sections.flatMap((section) => section.fields.map((field) => ({ key: field.key, value: field.value }))));
+
+  const toggleSensitive = (fieldKey: string) => setShowSensitive((current) => ({ ...current, [fieldKey]: !current[fieldKey] }));
 
   const currentPage = workingPayload.pages[activePageIndex];
   const stateClass = isSubmitting ? 'state-submitting' : isLocked ? 'state-locked' : 'state-editable';
@@ -54,29 +59,48 @@ export function ReviewForm({
             <section className="section-card" key={section.id}>
               <h5>{section.title}</h5>
               <div className="field-grid">
-                {section.fields.map((field) => (
-                  <article className="field-row" key={field.key}>
-                    <label htmlFor={field.key}>{field.label}</label>
-                    <input
-                      id={field.key}
-                      className={isLocked ? 'readonly-input' : ''}
-                      value={field.value}
-                      readOnly={isLocked}
-                      onChange={(event) => {
-                        setWorkingPayload((current) => ({
-                          ...current,
-                          pages: current.pages.map((page) => ({
-                            ...page,
-                            sections: page.sections.map((sec) => ({
-                              ...sec,
-                              fields: sec.fields.map((item) => (item.key === field.key ? { ...item, value: event.target.value } : item))
-                            }))
-                          }))
-                        }));
-                      }}
-                    />
-                  </article>
-                ))}
+                {section.fields.map((field) => {
+                  const sensitiveConfig = getSensitiveConfig(field);
+                  const isHiddenSensitive = sensitiveConfig && !showSensitive[field.key];
+                  return (
+                    <article className="field-row" key={field.key}>
+                      <label htmlFor={field.key}>{field.label}</label>
+                      <div className="field-input-row">
+                        <input
+                          id={field.key}
+                          type="text"
+                          className={isLocked ? 'readonly-input' : ''}
+                          value={getDisplayValue(field, field.value, showSensitive[field.key])}
+                          readOnly={isLocked || !!isHiddenSensitive}
+                          onChange={(event) => {
+                            if (isHiddenSensitive) {
+                              return;
+                            }
+                            setWorkingPayload((current) => ({
+                              ...current,
+                              pages: current.pages.map((page) => ({
+                                ...page,
+                                sections: page.sections.map((sec) => ({
+                                  ...sec,
+                                  fields: sec.fields.map((item) => (item.key === field.key ? { ...item, value: event.target.value } : item))
+                                }))
+                              }))
+                            }));
+                          }}
+                        />
+                        {sensitiveConfig ? (
+                          <button
+                            type="button"
+                            className="sensitive-toggle"
+                            onClick={() => toggleSensitive(field.key)}
+                          >
+                            {showSensitive[field.key] ? 'Hide' : 'Reveal'}
+                          </button>
+                        ) : null}
+                      </div>
+                    </article>
+                  );
+                })}
               </div>
             </section>
           ))}

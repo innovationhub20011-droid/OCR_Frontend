@@ -57,7 +57,6 @@ export interface OvdField {
   key: string;
   label: string;
   value: string;
-  confidence: number;
   required: boolean;
 }
 
@@ -75,7 +74,6 @@ export interface TextLineBlock {
   id: string;
   page: number;
   formattedText: string;
-  confidence: number;
 }
 
 export interface TextReviewPayload {
@@ -91,7 +89,6 @@ export interface FormField {
   key: string;
   label: string;
   value: string;
-  confidence: number;
   required: boolean;
 }
 

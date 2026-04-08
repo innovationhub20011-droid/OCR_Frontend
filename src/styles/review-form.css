@@ -136,12 +136,35 @@
   font-weight: 600;
 }
 
+.field-input-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+
 .field-row input {
   width: 100%;
   border: 1px solid #bfd3ea;
   border-radius: 8px;
   padding: 8px;
   color: #294a72;
+}
+
+.sensitive-toggle {
+  width: auto;
+  min-width: 70px;
+  border: 1px solid #bed3ea;
+  border-radius: 8px;
+  background: #f4f9ff;
+  color: #355d89;
+  font-size: 0.82rem;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+
+.sensitive-toggle:hover {
+  background: #e9f3ff;
 }
 
 .field-row input.readonly-input {

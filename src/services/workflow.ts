@@ -291,30 +291,30 @@ export class ExtractionWorkflowService {
   private buildOvdTemplateFields(ovdType: 'pan' | 'aadhaar' | null): OvdField[] {
     if (ovdType === 'pan') {
       return [
-        { key: 'fullName', label: 'Full Name', value: '', confidence: 0, required: true },
-        { key: 'panNumber', label: 'PAN Number', value: '', confidence: 0, required: true },
-        { key: 'dateOfBirth', label: 'Date of Birth', value: '', confidence: 0, required: true },
-        { key: 'fatherName', label: 'Father Name', value: '', confidence: 0, required: false }
+        { key: 'fullName', label: 'Full Name', value: '', required: true },
+        { key: 'panNumber', label: 'PAN Number', value: '', required: true },
+        { key: 'dateOfBirth', label: 'Date of Birth', value: '', required: true },
+        { key: 'fatherName', label: 'Father Name', value: '', required: false }
       ];
     }
 
     if (ovdType === 'aadhaar') {
       return [
-        { key: 'fullName', label: 'Full Name', value: '', confidence: 0, required: true },
-        { key: 'dateOfBirth', label: 'Date of Birth', value: '', confidence: 0, required: true },
-        { key: 'gender', label: 'Gender', value: '', confidence: 0, required: false },
-        { key: 'aadhaarNumber', label: 'Aadhaar Number', value: '', confidence: 0, required: true },
-        { key: 'address', label: 'Address', value: '', confidence: 0, required: false }
+        { key: 'fullName', label: 'Full Name', value: '', required: true },
+        { key: 'dateOfBirth', label: 'Date of Birth', value: '', required: true },
+        { key: 'gender', label: 'Gender', value: '', required: false },
+        { key: 'aadhaarNumber', label: 'Aadhaar Number', value: '', required: true },
+        { key: 'address', label: 'Address', value: '', required: false }
       ];
     }
 
     return [
-      { key: 'fullName', label: 'Full Name', value: '', confidence: 0, required: true },
-      { key: 'documentNumber', label: 'Document Number', value: '', confidence: 0, required: true },
-      { key: 'dateOfBirth', label: 'Date of Birth', value: '', confidence: 0, required: true },
-      { key: 'gender', label: 'Gender', value: '', confidence: 0, required: false },
-      { key: 'address', label: 'Address', value: '', confidence: 0, required: true },
-      { key: 'issuedDate', label: 'Issued Date', value: '', confidence: 0, required: false }
+      { key: 'fullName', label: 'Full Name', value: '', required: true },
+      { key: 'documentNumber', label: 'Document Number', value: '', required: true },
+      { key: 'dateOfBirth', label: 'Date of Birth', value: '', required: true },
+      { key: 'gender', label: 'Gender', value: '', required: false },
+      { key: 'address', label: 'Address', value: '', required: true },
+      { key: 'issuedDate', label: 'Issued Date', value: '', required: false }
     ];
   }
 
@@ -525,7 +525,6 @@ export class ExtractionWorkflowService {
               {
                 id: 'txt-1',
                 page: 1,
-                confidence: 0,
                 formattedText: extractedText || ''
               }
             ]
@@ -543,7 +542,6 @@ export class ExtractionWorkflowService {
             {
               id: 'txt-1',
               page: 1,
-              confidence: 0,
               formattedText: ''
             }
           ]
@@ -561,7 +559,6 @@ export class ExtractionWorkflowService {
         {
           id: 'txt-1',
           page: 1,
-          confidence: 92,
           formattedText: [
             'To,',
             'The Branch Manager',
@@ -580,7 +577,6 @@ export class ExtractionWorkflowService {
         {
           id: 'txt-2',
           page: 2,
-          confidence: 89,
           formattedText: [
             'Enclosures:',
             '1. Self-attested address proof',
@@ -664,57 +660,57 @@ export class ExtractionWorkflowService {
                   id: 'sec-top',
                   title: 'Top Section',
                   fields: [
-                    { key: 'branch_name', label: 'Branch Name', value: '', confidence: 0, required: false },
-                    { key: 'branch_code', label: 'Branch Code', value: '', confidence: 0, required: false },
-                    { key: 'date', label: 'Date', value: '', confidence: 0, required: false },
-                    { key: 'customer_id', label: 'Customer ID', value: '', confidence: 0, required: false },
-                    { key: 'account_number', label: 'Account Number', value: '', confidence: 0, required: false },
-                    { key: 'account_type', label: 'Account Type', value: '', confidence: 0, required: false },
-                    { key: 'ckyc_number', label: 'CKYC Number', value: '', confidence: 0, required: false },
-                    { key: 'pf_number', label: 'PF Number', value: '', confidence: 0, required: false }
+                    { key: 'branch_name', label: 'Branch Name', value: '', required: false },
+                    { key: 'branch_code', label: 'Branch Code', value: '', required: false },
+                    { key: 'date', label: 'Date', value: '', required: false },
+                    { key: 'customer_id', label: 'Customer ID', value: '', required: false },
+                    { key: 'account_number', label: 'Account Number', value: '', required: false },
+                    { key: 'account_type', label: 'Account Type', value: '', required: false },
+                    { key: 'ckyc_number', label: 'CKYC Number', value: '', required: false },
+                    { key: 'pf_number', label: 'PF Number', value: '', required: false }
                   ]
                 },
                 {
                   id: 'sec-personal',
                   title: 'Personal Section',
                   fields: [
-                    { key: 'first_name', label: 'First Name', value: '', confidence: 0, required: false },
-                    { key: 'middle_name', label: 'Middle Name', value: '', confidence: 0, required: false },
-                    { key: 'last_name', label: 'Last Name', value: '', confidence: 0, required: false },
-                    { key: 'fullName', label: 'Full Name', value: '', confidence: 0, required: false },
-                    { key: 'dob', label: 'Date of Birth', value: '', confidence: 0, required: false },
-                    { key: 'gender', label: 'Gender', value: '', confidence: 0, required: false },
-                    { key: 'marital_status', label: 'Marital Status', value: '', confidence: 0, required: false },
-                    { key: 'parent_or_spouse_name', label: 'Parent/Spouse Name', value: '', confidence: 0, required: false },
-                    { key: 'guardian_name', label: 'Guardian Name', value: '', confidence: 0, required: false },
-                    { key: 'relationship_with_guardian', label: 'Relationship With Guardian', value: '', confidence: 0, required: false },
-                    { key: 'nationality', label: 'Nationality', value: '', confidence: 0, required: false },
-                    { key: 'citizenship', label: 'Citizenship', value: '', confidence: 0, required: false },
-                    { key: 'occupation_type', label: 'Occupation Type', value: '', confidence: 0, required: false },
-                    { key: 'employee_id', label: 'Employee ID', value: '', confidence: 0, required: false },
-                    { key: 'place_of_posting', label: 'Place of Posting', value: '', confidence: 0, required: false },
-                    { key: 'organization_name', label: 'Organization Name', value: '', confidence: 0, required: false },
-                    { key: 'nature_of_business', label: 'Nature of Business', value: '', confidence: 0, required: false },
-                    { key: 'designation', label: 'Designation', value: '', confidence: 0, required: false },
-                    { key: 'annual_income', label: 'Annual Income', value: '', confidence: 0, required: false },
-                    { key: 'net_worth', label: 'Net Worth', value: '', confidence: 0, required: false },
-                    { key: 'source_of_funds', label: 'Source of Funds', value: '', confidence: 0, required: false },
-                    { key: 'religion', label: 'Religion', value: '', confidence: 0, required: false },
-                    { key: 'category', label: 'Category', value: '', confidence: 0, required: false },
-                    { key: 'person_with_disability', label: 'Person With Disability', value: '', confidence: 0, required: false },
-                    { key: 'education', label: 'Education', value: '', confidence: 0, required: false },
-                    { key: 'politically_exposed', label: 'Politically Exposed', value: '', confidence: 0, required: false },
-                    { key: 'pan_number', label: 'PAN Number', value: '', confidence: 0, required: false }
+                    { key: 'first_name', label: 'First Name', value: '', required: false },
+                    { key: 'middle_name', label: 'Middle Name', value: '', required: false },
+                    { key: 'last_name', label: 'Last Name', value: '', required: false },
+                    { key: 'fullName', label: 'Full Name', value: '', required: false },
+                    { key: 'dob', label: 'Date of Birth', value: '', required: false },
+                    { key: 'gender', label: 'Gender', value: '', required: false },
+                    { key: 'marital_status', label: 'Marital Status', value: '', required: false },
+                    { key: 'parent_or_spouse_name', label: 'Parent/Spouse Name', value: '', required: false },
+                    { key: 'guardian_name', label: 'Guardian Name', value: '', required: false },
+                    { key: 'relationship_with_guardian', label: 'Relationship With Guardian', value: '', required: false },
+                    { key: 'nationality', label: 'Nationality', value: '', required: false },
+                    { key: 'citizenship', label: 'Citizenship', value: '', required: false },
+                    { key: 'occupation_type', label: 'Occupation Type', value: '', required: false },
+                    { key: 'employee_id', label: 'Employee ID', value: '', required: false },
+                    { key: 'place_of_posting', label: 'Place of Posting', value: '', required: false },
+                    { key: 'organization_name', label: 'Organization Name', value: '', required: false },
+                    { key: 'nature_of_business', label: 'Nature of Business', value: '', required: false },
+                    { key: 'designation', label: 'Designation', value: '', required: false },
+                    { key: 'annual_income', label: 'Annual Income', value: '', required: false },
+                    { key: 'net_worth', label: 'Net Worth', value: '', required: false },
+                    { key: 'source_of_funds', label: 'Source of Funds', value: '', required: false },
+                    { key: 'religion', label: 'Religion', value: '', required: false },
+                    { key: 'category', label: 'Category', value: '', required: false },
+                    { key: 'person_with_disability', label: 'Person With Disability', value: '', required: false },
+                    { key: 'education', label: 'Education', value: '', required: false },
+                    { key: 'politically_exposed', label: 'Politically Exposed', value: '', required: false },
+                    { key: 'pan_number', label: 'PAN Number', value: '', required: false }
                   ]
                 },
                 {
                   id: 'sec-contact',
                   title: 'Contact Section',
                   fields: [
-                    { key: 'mobile_number', label: 'Mobile Number', value: '', confidence: 0, required: false },
-                    { key: 'email', label: 'Email', value: '', confidence: 0, required: false },
-                    { key: 'std_tel_off', label: 'STD Tel (Office)', value: '', confidence: 0, required: false },
-                    { key: 'tel_res', label: 'Tel (Residence)', value: '', confidence: 0, required: false }
+                    { key: 'mobile_number', label: 'Mobile Number', value: '', required: false },
+                    { key: 'email', label: 'Email', value: '', required: false },
+                    { key: 'std_tel_off', label: 'STD Tel (Office)', value: '', required: false },
+                    { key: 'tel_res', label: 'Tel (Residence)', value: '', required: false }
                   ]
                 }
               ]
@@ -737,10 +733,10 @@ export class ExtractionWorkflowService {
                   id: 'sec-personal',
                   title: 'Personal Details',
                   fields: [
-                    { key: 'fullName', label: 'Full Name', value: 'RAMESH KUMAR', confidence: 97, required: true },
-                    { key: 'dob', label: 'Date of Birth', value: '1991-06-15', confidence: 96, required: true },
-                    { key: 'pan', label: 'PAN Number', value: 'ABCDE1234F', confidence: 94, required: true },
-                    { key: 'mobile', label: 'Mobile Number', value: '9876543210', confidence: 93, required: true }
+                    { key: 'fullName', label: 'Full Name', value: 'RAMESH KUMAR', required: true },
+                    { key: 'dob', label: 'Date of Birth', value: '1991-06-15', required: true },
+                    { key: 'pan', label: 'PAN Number', value: 'ABCDE1234F', required: true },
+                    { key: 'mobile', label: 'Mobile Number', value: '9876543210', required: true }
                   ]
                 }
               ]
@@ -753,10 +749,10 @@ export class ExtractionWorkflowService {
                   id: 'sec-employment',
                   title: 'Income & Occupation',
                   fields: [
-                    { key: 'occupation', label: 'Occupation', value: 'Software Engineer', confidence: 90, required: true },
-                    { key: 'employer', label: 'Employer Name', value: 'ABC Technologies Pvt Ltd', confidence: 91, required: true },
-                    { key: 'annualIncome', label: 'Annual Income', value: '1400000', confidence: 88, required: true },
-                    { key: 'workExp', label: 'Work Experience (Years)', value: '7', confidence: 86, required: false }
+                    { key: 'occupation', label: 'Occupation', value: 'Software Engineer', required: true },
+                    { key: 'employer', label: 'Employer Name', value: 'ABC Technologies Pvt Ltd', required: true },
+                    { key: 'annualIncome', label: 'Annual Income', value: '1400000', required: true },
+                    { key: 'workExp', label: 'Work Experience (Years)', value: '7', required: false }
                   ]
                 }
               ]
@@ -769,10 +765,10 @@ export class ExtractionWorkflowService {
                   id: 'sec-loan',
                   title: 'Requested Facility',
                   fields: [
-                    { key: 'loanType', label: 'Loan Type', value: 'Personal Loan', confidence: 95, required: true },
-                    { key: 'amount', label: 'Requested Amount', value: '500000', confidence: 92, required: true },
-                    { key: 'tenure', label: 'Tenure (Months)', value: '48', confidence: 93, required: true },
-                    { key: 'emi', label: 'Estimated EMI', value: '12780', confidence: 85, required: false }
+                    { key: 'loanType', label: 'Loan Type', value: 'Personal Loan', required: true },
+                    { key: 'amount', label: 'Requested Amount', value: '500000', required: true },
+                    { key: 'tenure', label: 'Tenure (Months)', value: '48', required: true },
+                    { key: 'emi', label: 'Estimated EMI', value: '12780', required: false }
                   ]
                 }
               ]
@@ -1018,6 +1014,7 @@ export class ExtractionWorkflowService {
   private sortedVerificationRows(): VerificationRecord[] {
     return Array.from(this.verificationStore.values()).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   }
+
 }
 
 export const extractionWorkflowService = new ExtractionWorkflowService();
