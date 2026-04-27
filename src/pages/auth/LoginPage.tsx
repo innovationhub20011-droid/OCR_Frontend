@@ -6,8 +6,8 @@ import sbiLogo from '../../assets/sbi_logo_launch.jpg';
 
 export function LoginPage(): JSX.Element {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('user.sbi@bank.com');
-  const [password, setPassword] = useState('User@123');
+  const [email, setEmail] = useState('maker.sbi@bank.com');
+  const [password, setPassword] = useState('Maker@123');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState('');
   const [touched, setTouched] = useState({ email: false, password: false });

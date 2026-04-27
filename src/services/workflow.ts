@@ -13,6 +13,7 @@ import {
 import {
   AadhaarExtractionResponse,
   AccountOpeningPage1ExtractionResponse,
+  ApiError,
   backendApiService,
   PanExtractionResponse,
   RawTextExtractionResponse
@@ -25,6 +26,7 @@ const CURRENT_SESSION_KEY = 'sbi-ocr-current-session';
 
 export class ExtractionWorkflowService {
   private currentSession: ExtractionSession | null = null;
+  private currentFileBlob: Blob | null = null; // Store file blob for photo extraction
   private verificationStore = new Map<string, VerificationRecord>();
   private reviewPayloadCache: ReviewPayload | null = null;
   private inFlightReviewPayload: Promise<ReviewPayload> | null = null;
@@ -41,7 +43,9 @@ export class ExtractionWorkflowService {
       previewUrl: context.previewUrl,
       previewKind: context.previewKind,
       scenario: this.resolveScenario(context.documentId),
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      extractPhoto: context.extractPhoto,
+      extractSignature: context.extractSignature
     };
     this.currentSession = session;
     this.persistCurrentSession();
@@ -129,6 +133,16 @@ export class ExtractionWorkflowService {
       previewKind: session.previewKind,
       summaryMessage: this.buildGenericScenarioSummary(session.scenario)
     };
+  }
+
+  getCurrentFileBlob(): Blob | null {
+    return this.currentFileBlob;
+  }
+
+  setCurrentFileBlob(blob: Blob | null): void {
+    const blobInfo = blob ? `${blob.size} bytes, type: ${blob.type}` : 'null';
+    console.log('[Workflow] setCurrentFileBlob called with blob:', blobInfo);
+    this.currentFileBlob = blob;
   }
 
   async saveReviewDraft(request: { values: Array<{ key: string; value: string }> }): Promise<{ savedAt: string; record: VerificationRecord }> {
@@ -239,20 +253,36 @@ export class ExtractionWorkflowService {
       fields: templateFields
     };
 
-    if (!ovdType || !session.previewUrl) {
+    if (!ovdType) {
       return payload;
     }
 
     try {
-      const objectResponse = await fetch(session.previewUrl);
-      if (!objectResponse.ok) {
+      // Use stored file blob if available, otherwise try to fetch from preview URL
+      let fileBlob = this.currentFileBlob;
+      console.log('[Workflow] createOvdPayload - currentFileBlob available:', !!this.currentFileBlob);
+      
+      if (!fileBlob && session.previewUrl) {
+        console.log('[Workflow] No stored blob, fetching from preview URL');
+        const objectResponse = await fetch(session.previewUrl);
+        if (!objectResponse.ok) {
+          console.log('[Workflow] Preview URL fetch failed:', objectResponse.status);
+          return payload;
+        }
+        fileBlob = await objectResponse.blob();
+        console.log('[Workflow] Fetched blob from preview URL');
+      }
+      
+      if (!fileBlob) {
+        console.log('[Workflow] No file blob available, returning empty payload');
         return payload;
       }
-
-      const fileBlob = await objectResponse.blob();
+      this.currentFileBlob = fileBlob; // Store for later photo extraction
+      console.log('[Workflow] Calling extract API for', ovdType, 'with extractPhoto:', session.extractPhoto, 'extractSignature:', session.extractSignature);
       const extractionResult = ovdType === 'pan'
-        ? await backendApiService.extractPan(fileBlob, session.fileName || API_DEFAULT_UPLOAD_FILE_NAMES.pan)
-        : await backendApiService.extractAadhaar(fileBlob, session.fileName || API_DEFAULT_UPLOAD_FILE_NAMES.aadhaar);
+        ? await backendApiService.extractPan(fileBlob, session.fileName || API_DEFAULT_UPLOAD_FILE_NAMES.pan, session.extractPhoto, session.extractSignature)
+        : await backendApiService.extractAadhaar(fileBlob, session.fileName || API_DEFAULT_UPLOAD_FILE_NAMES.aadhaar, session.extractPhoto);
+      console.log('[Workflow] API extraction result:', extractionResult);
 
       const mappedFields = ovdType === 'pan'
         ? this.mergePanFieldsFromApi(templateFields, extractionResult)
@@ -264,12 +294,39 @@ export class ExtractionWorkflowService {
         (field) => field.key === 'documentNumber' || field.key === 'panNumber' || field.key === 'aadhaarNumber'
       )?.value || '';
 
-      return {
+      // Extract photo if available (from PAN or Aadhaar API when photo=true)
+      const extractedPhoto: string | undefined = (ovdType === 'pan' || ovdType === 'aadhaar') && extractionResult.face_image 
+        ? (extractionResult.face_image as string)
+        : undefined;
+
+      // Extract signature if available (from PAN API when signature=true)
+      const extractedSignature: string | undefined = ovdType === 'pan' && extractionResult.signature_image
+        ? (extractionResult.signature_image as string)
+        : undefined;
+
+      const result: OvdReviewPayload = {
         ...payload,
         customerReference: extractedDocumentNumber,
         fields: mappedFields
       };
+      
+      if (extractedPhoto) {
+        result.extractedPhoto = extractedPhoto;
+      }
+      
+      if (extractedSignature) {
+        result.signature_image = extractedSignature;
+      }
+      
+      return result;
     } catch (error) {
+      if (error instanceof ApiError) {
+        console.error('API Error during extraction:', error.detail);
+        return {
+          ...payload,
+          errorMessage: error.detail
+        };
+      }
       console.error('Failed to create OVD payload from preview URL', error);
       // Return template fields only; do not fall back to mock values.
       return payload;
@@ -531,6 +588,18 @@ export class ExtractionWorkflowService {
           };
         }
       } catch (error) {
+        if (error instanceof ApiError) {
+          console.error('API Error during text extraction:', error.detail);
+          return {
+            scenario: 'text',
+            documentLabel: session.documentLabel,
+            fileName: session.fileName,
+            previewUrl: session.previewUrl,
+            previewKind: session.previewKind,
+            blocks: [],
+            errorMessage: error.detail
+          };
+        }
         console.error('Failed to build text payload from preview URL', error);
         return {
           scenario: 'text',
@@ -793,6 +862,13 @@ export class ExtractionWorkflowService {
         pages: this.mergeAccountOpeningPage1FromApi(payload.pages, apiResult)
       };
     } catch (error) {
+      if (error instanceof ApiError) {
+        console.error('API Error during form extraction:', error.detail);
+        return {
+          ...payload,
+          errorMessage: error.detail
+        };
+      }
       console.error('Failed to create form payload from account opening preview URL', error);
       return payload;
     }

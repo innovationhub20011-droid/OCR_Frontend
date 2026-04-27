@@ -33,6 +33,8 @@ export interface ExtractionSessionContext {
   fileName: string;
   previewUrl?: string;
   previewKind?: 'image' | 'pdf' | 'other';
+  extractPhoto?: boolean;
+  extractSignature?: boolean;
 }
 
 export interface ExtractionSession {
@@ -43,6 +45,8 @@ export interface ExtractionSession {
   previewKind?: 'image' | 'pdf' | 'other';
   scenario: DocumentScenario;
   createdAt: string;
+  extractPhoto?: boolean;
+  extractSignature?: boolean;
 }
 
 export interface StageEvent {
@@ -68,6 +72,10 @@ export interface OvdReviewPayload {
   previewKind?: 'image' | 'pdf' | 'other';
   customerReference: string;
   fields: OvdField[];
+  errorMessage?: string;
+  extractedPhoto?: string; // Base64 encoded photo from PAN
+  extractedSignature?: string; // Base64 encoded signature from PAN
+  signature_image?: string; // Base64 encoded signature image
 }
 
 export interface TextLineBlock {
@@ -83,6 +91,7 @@ export interface TextReviewPayload {
   previewUrl?: string;
   previewKind?: 'image' | 'pdf' | 'other';
   blocks: TextLineBlock[];
+  errorMessage?: string;
 }
 
 export interface FormField {
@@ -112,6 +121,7 @@ export interface FormReviewPayload {
   previewKind?: 'image' | 'pdf' | 'other';
   totalPages: number;
   pages: FormPage[];
+  errorMessage?: string;
 }
 
 export interface MiscReviewPayload {

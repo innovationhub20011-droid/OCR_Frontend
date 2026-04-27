@@ -210,10 +210,17 @@ npm run preview
 
 ## Demo Credentials
 
-Use the built-in demo account:
+Two demo accounts are available:
 
-- Email: `user.sbi@bank.com`
-- Password: `User@123`
+**Maker (Default - pre-filled)**
+- Email: `maker.sbi@bank.com`
+- Password: `Maker@123`
+- Role: Can upload documents and review extracted data
+
+**Checker**
+- Email: `checker.sbi@bank.com`
+- Password: `Checker@123`
+- Role: Can approve or reject documents submitted by Makers
 
 ## Environment and Backend Configuration
 

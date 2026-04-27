@@ -17,6 +17,8 @@ export function UploadProcessingPage(): JSX.Element {
   const previousPreviewUrlRef = useRef<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(46);
+  const [extractPhotoChecked, setExtractPhotoChecked] = useState(false);
+  const [extractSignatureChecked, setExtractSignatureChecked] = useState(false);
 
   const selectedDocumentId = params.get('documentId') || '';
   const selectedDocumentLabel = DOCUMENT_LABEL_MAP[selectedDocumentId] || 'Selected Document';
@@ -69,16 +71,24 @@ export function UploadProcessingPage(): JSX.Element {
 
     if (uploadProgress >= 100) {
       setIsUploading(false);
+      // Store the file blob in the workflow service for extraction
+      console.log('[UploadPage] Upload complete, storing file blob:', selectedFile?.name || 'null');
+      if (selectedFile) {
+        extractionWorkflowService.setCurrentFileBlob(selectedFile);
+      }
       extractionWorkflowService.createSession({
         documentId: selectedDocumentId,
         documentLabel: selectedDocumentLabel,
         fileName,
         previewUrl: previewUrl || undefined,
-        previewKind: previewKind || 'other'
+        previewKind: previewKind || 'other',
+        extractPhoto: extractPhotoChecked,
+        extractSignature: extractSignatureChecked
       });
+      console.log('[UploadPage] Session created, navigating to review');
       navigate(APP_ROUTES.review);
     }
-  }, [isUploading, uploadProgress, navigate, selectedDocumentId, selectedDocumentLabel, fileName, previewUrl, previewKind]);
+  }, [isUploading, uploadProgress, navigate, selectedDocumentId, selectedDocumentLabel, fileName, previewUrl, previewKind, extractPhotoChecked, extractSignatureChecked, selectedFile]);
 
   return (
     <main className="upload-page">
@@ -135,6 +145,40 @@ export function UploadProcessingPage(): JSX.Element {
               </aside>
             ) : null}
           </div>
+
+          {(selectedDocumentId === 'ovd-pan' || selectedDocumentId === 'ovd-aadhaar') && selectedFile ? (
+            <div className="photo-extraction-section">
+              <h3>Photo Extraction</h3>
+              <div className="photo-checkbox">
+                <input
+                  id="extractPhotoCheckbox"
+                  type="checkbox"
+                  checked={extractPhotoChecked}
+                  onChange={(e) => setExtractPhotoChecked(e.target.checked)}
+                  disabled={isUploading}
+                />
+                <label htmlFor="extractPhotoCheckbox">
+                  {selectedDocumentId === 'ovd-pan' ? 'Extract photo from PAN card' : 'Extract photo from Aadhaar card'}
+                </label>
+              </div>
+            </div>
+          ) : null}
+
+          {selectedDocumentId === 'ovd-pan' && selectedFile ? (
+            <div className="photo-extraction-section">
+              <h3>Signature Extraction</h3>
+              <div className="photo-checkbox">
+                <input
+                  id="extractSignatureCheckbox"
+                  type="checkbox"
+                  checked={extractSignatureChecked}
+                  onChange={(e) => setExtractSignatureChecked(e.target.checked)}
+                  disabled={isUploading}
+                />
+                <label htmlFor="extractSignatureCheckbox">Extract signature from PAN card</label>
+              </div>
+            </div>
+          ) : null}
 
           <div className="action-row">
             <button className="back-btn" type="button" onClick={() => navigate(APP_ROUTES.uploadDocuments)}>Back</button>

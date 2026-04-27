@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ReviewOvdProps } from './ReviewShared';
-import { getDisplayValue, getSensitiveConfig } from '../../utils/sensitiveFieldUtils';
+import { getDisplayValue, getSensitiveConfig, validateFieldInput, getMaxLengthForField } from '../../utils/sensitiveFieldUtils';
 
 export function ReviewOvd({
   payload,
@@ -14,10 +14,12 @@ export function ReviewOvd({
 }: ReviewOvdProps): JSX.Element {
   const [fields, setFields] = useState(payload.fields);
   const [showSensitive, setShowSensitive] = useState<Record<string, boolean>>({});
+  const [extractedPhoto, setExtractedPhoto] = useState<string | null>(payload.extractedPhoto || null);
 
   useEffect(() => {
     setFields(payload.fields);
     setShowSensitive({});
+    setExtractedPhoto(payload.extractedPhoto || null);
   }, [payload]);
 
   const stateClass = isSubmitting ? 'state-submitting' : isLocked ? 'state-locked' : 'state-editable';
@@ -37,6 +39,24 @@ export function ReviewOvd({
         <span className="source-file">Source: {payload.fileName}</span>
       </header>
 
+      {(payload.documentLabel.toLowerCase().includes('pan') || payload.documentLabel.toLowerCase().includes('aadhaar')) && extractedPhoto ? (
+        <div className="photo-extraction-section">
+          <h3>Extracted Photo</h3>
+          <div className="photo-preview-container">
+            <img src={extractedPhoto} alt={`Extracted ${payload.documentLabel} Photo`} className="extracted-photo" />
+          </div>
+        </div>
+      ) : null}
+
+      {(payload.documentLabel.toLowerCase().includes('pan') || payload.documentLabel.toLowerCase().includes('aadhaar')) && payload.signature_image ? (
+        <div className="signature-extraction-section">
+          <h3>Extracted Signature</h3>
+          <div className="signature-preview-container">
+            <img src={payload.signature_image} alt={`Extracted ${payload.documentLabel} Signature`} className="extracted-signature" />
+          </div>
+        </div>
+      ) : null}
+
       <div className="field-grid">
         {fields.map((field) => {
           const sensitiveConfig = getSensitiveConfig(field);
@@ -51,9 +71,10 @@ export function ReviewOvd({
                   value={getDisplayValue(field, field.value, showSensitive[field.key])}
                   readOnly={isLocked || !!isHiddenSensitive}
                   className={isLocked ? 'readonly-input' : ''}
+                  maxLength={getMaxLengthForField(field.key)}
                   onChange={(event) =>
                     !isHiddenSensitive &&
-                    setFields((all) => all.map((item) => (item.key === field.key ? { ...item, value: event.target.value } : item)))
+                    setFields((all) => all.map((item) => (item.key === field.key ? { ...item, value: validateFieldInput(field.key, event.target.value) } : item)))
                   }
                 />
                 {sensitiveConfig ? (

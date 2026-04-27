@@ -13,8 +13,14 @@ export type PanExtractionResponse = {
     date_of_birth?: string;
     father_name?: string;
   };
+  face_image?: string; // Base64 data URL from API
+  signature?: string; // Base64 data URL from API
+  photo?: string | Blob; // Base64 encoded photo or blob
+  photoUrl?: string; // Data URL for photo
 } & Record<string, unknown>;
-export type AadhaarExtractionResponse = Record<string, unknown>;
+export type AadhaarExtractionResponse = {
+  face_image?: string; // Base64 data URL from API
+} & Record<string, unknown>;
 export type RawTextExtractionResponse = {
   document_type?: string;
   file_name?: string;
@@ -26,8 +32,23 @@ export type RawTextExtractionResponse = {
 } & Record<string, unknown>;
 export type AccountOpeningPage1ExtractionResponse = Record<string, unknown>;
 
-async function postFormData<TResponse>(path: string, formData: FormData): Promise<TResponse> {
-  const response = await fetch(`${API_BASE_URL}${path}`, {
+export class ApiError extends Error {
+  constructor(public statusCode: number, public detail: string) {
+    super(detail);
+    this.name = 'ApiError';
+  }
+}
+
+async function postFormData<TResponse>(path: string, formData: FormData, queryParams?: Record<string, string | boolean>): Promise<TResponse> {
+  const fullUrl = API_BASE_URL ? `${API_BASE_URL}${path}` : path;
+  const url = new URL(fullUrl, window.location.origin);
+  if (queryParams) {
+    Object.entries(queryParams).forEach(([key, value]) => {
+      url.searchParams.append(key, String(value));
+    });
+  }
+  console.log('[API] postFormData - Full URL:', url.toString(), 'Path:', path, 'API_BASE_URL:', API_BASE_URL);
+  const response = await fetch(url.toString(), {
     method: 'POST',
     headers: {
       Accept: API_HEADERS.acceptJson
@@ -40,23 +61,41 @@ async function postFormData<TResponse>(path: string, formData: FormData): Promis
       console.error('Failed to read error response body', error);
       return 'Unable to read error response body';
     });
-    throw new Error(`Backend request failed (${response.status}): ${errorText}`);
+
+    try {
+      const errorJson = JSON.parse(errorText);
+      const detail = errorJson.detail || errorText;
+      throw new ApiError(response.status, detail);
+    } catch (parseError) {
+      if (parseError instanceof ApiError) {
+        throw parseError;
+      }
+      throw new ApiError(response.status, errorText);
+    }
   }
 
   return (await response.json()) as TResponse;
 }
 
 export class BackendApiService {
-  async extractPan(file: Blob, fileName: string = API_DEFAULT_UPLOAD_FILE_NAMES.pan): Promise<PanExtractionResponse> {
+  async extractPan(
+    file: Blob,
+    fileName: string = API_DEFAULT_UPLOAD_FILE_NAMES.pan,
+    extractPhoto: boolean = false,
+    extractSignature: boolean = false
+  ): Promise<PanExtractionResponse> {
     const formData = new FormData();
     formData.append(API_UPLOAD_FIELD_KEYS.file, file, fileName);
-    return postFormData<PanExtractionResponse>(API_ENDPOINTS.extractPan, formData);
+    return postFormData<PanExtractionResponse>(API_ENDPOINTS.extractPan, formData, {
+      photo: extractPhoto,
+      signature: extractSignature
+    });
   }
 
-  async extractAadhaar(file: Blob, fileName: string = API_DEFAULT_UPLOAD_FILE_NAMES.aadhaar): Promise<AadhaarExtractionResponse> {
+  async extractAadhaar(file: Blob, fileName: string = API_DEFAULT_UPLOAD_FILE_NAMES.aadhaar, extractPhoto: boolean = false): Promise<AadhaarExtractionResponse> {
     const formData = new FormData();
     formData.append(API_UPLOAD_FIELD_KEYS.file, file, fileName);
-    return postFormData<AadhaarExtractionResponse>(API_ENDPOINTS.extractAadhaar, formData);
+    return postFormData<AadhaarExtractionResponse>(API_ENDPOINTS.extractAadhaar, formData, { photo: extractPhoto });
   }
 
   async extractRawText(file: Blob, fileName: string = API_DEFAULT_UPLOAD_FILE_NAMES.handwritten): Promise<RawTextExtractionResponse> {

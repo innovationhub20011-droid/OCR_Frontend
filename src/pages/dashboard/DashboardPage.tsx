@@ -14,6 +14,7 @@ export function DashboardPage(): JSX.Element {
   const user = useCurrentUser();
   const [isLoading, setIsLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<'OVDs' | 'Text Documents' | 'Forms' | 'Miscellaneous'>('OVDs');
+  const isChecker = user?.role === 'Checker';
 
   useEffect(() => {
     const timer = window.setTimeout(() => setIsLoading(false), 300);
@@ -75,11 +76,17 @@ export function DashboardPage(): JSX.Element {
         ? ['Account Opening Form', 'Housing Loan Form', 'Personal Loan Form']
         : ['Cheques', 'Applications', 'Other Supporting Documents'];
 
-  const sideNav = [
-    { label: 'Upload Document', icon: 'U' },
-    { label: 'Start New Verification', icon: 'N' },
-    { label: 'Pending Queue', icon: 'P' }
-  ] as const;
+  const sideNav = (isChecker 
+    ? [
+        { label: 'Checker Queue', icon: 'C' },
+        { label: 'Verification Queue', icon: 'V' }
+      ]
+    : [
+        { label: 'Upload Document', icon: 'U' },
+        { label: 'Start New Verification', icon: 'N' },
+        { label: 'Pending Queue', icon: 'P' }
+      ]
+  );
 
   const activities = [
     { title: 'Aadhaar Card', id: '1824-5608-9123', age: 'Just now', status: 'Just time' },
@@ -119,15 +126,34 @@ export function DashboardPage(): JSX.Element {
         onNavigate={onTopNavNavigate}
       />
 
-      <DashboardUploadBanner onUpload={() => navigate(APP_ROUTES.uploadDocuments)} />
-
-      <section className="workspace-grid">
+      {isChecker ? (
+        <section className="checker-dashboard">
+          <article className="checker-banner">
+            <h2>Welcome, {user?.fullName}</h2>
+            <p>You are logged in as a <strong>Checker</strong>. Your role is to review and verify documents submitted by makers.</p>
+            <button className="btn btn-blue" type="button" onClick={() => navigate(APP_ROUTES.checkerQueue)}>
+              Go to Checker Queue →
+            </button>
+          </article>
+          <section className="stats-panel">
+            {stats.map((stat) => (
+              <article className="stat-card" key={stat.label}>
+                <h4>{stat.value}</h4>
+                <p>{stat.label}</p>
+              </article>
+            ))}
+          </section>
+        </section>
+      ) : (
+        <>
+          <DashboardUploadBanner onUpload={() => navigate(APP_ROUTES.uploadDocuments)} />
+          <section className="workspace-grid">
         <aside className="left-sidenav" aria-label="Side Navigation">
           {sideNav.map((item) => (
             <button
               key={item.label}
               type="button"
-              className={item.label === 'Upload Document' ? 'active' : ''}
+              className={item.label === (isChecker ? 'Checker Queue' : 'Upload Document') ? 'active' : ''}
               onClick={() => {
                 if (item.label === 'Upload Document' || item.label === 'Start New Verification') {
                   navigate(APP_ROUTES.uploadDocuments);
@@ -135,6 +161,15 @@ export function DashboardPage(): JSX.Element {
                 }
                 if (item.label === 'Pending Queue') {
                   navigate(APP_ROUTES.verificationQueue);
+                  return;
+                }
+                if (item.label === 'Checker Queue') {
+                  navigate(APP_ROUTES.checkerQueue);
+                  return;
+                }
+                if (item.label === 'Verification Queue') {
+                  navigate(APP_ROUTES.verificationQueue);
+                  return;
                 }
               }}
             >
@@ -209,6 +244,8 @@ export function DashboardPage(): JSX.Element {
           </section>
         </aside>
       </section>
+        </>
+      )}
 
     </main>
   );

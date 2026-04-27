@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ReviewDraftValue, ReviewFormProps } from './ReviewShared';
-import { getDisplayValue, getSensitiveConfig } from '../../utils/sensitiveFieldUtils';
+import { getDisplayValue, getSensitiveConfig, validateFieldInput, getMaxLengthForField } from '../../utils/sensitiveFieldUtils';
 
 export function ReviewForm({
   payload,
@@ -72,17 +72,19 @@ export function ReviewForm({
                           className={isLocked ? 'readonly-input' : ''}
                           value={getDisplayValue(field, field.value, showSensitive[field.key])}
                           readOnly={isLocked || !!isHiddenSensitive}
+                          maxLength={getMaxLengthForField(field.key)}
                           onChange={(event) => {
                             if (isHiddenSensitive) {
                               return;
                             }
+                            const validatedValue = validateFieldInput(field.key, event.target.value);
                             setWorkingPayload((current) => ({
                               ...current,
                               pages: current.pages.map((page) => ({
                                 ...page,
                                 sections: page.sections.map((sec) => ({
                                   ...sec,
-                                  fields: sec.fields.map((item) => (item.key === field.key ? { ...item, value: event.target.value } : item))
+                                  fields: sec.fields.map((item) => (item.key === field.key ? { ...item, value: validatedValue } : item))
                                 }))
                               }))
                             }));

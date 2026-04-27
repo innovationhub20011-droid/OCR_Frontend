@@ -15,6 +15,7 @@ export function ReviewContainerPage(): JSX.Element {
   const user = useCurrentUser();
   const [isLoading, setIsLoading] = useState(true);
   const [infoMessage, setInfoMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const [payload, setPayload] = useState<ReviewPayload | null>(null);
   const [isSavingDraft, setIsSavingDraft] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -29,7 +30,15 @@ export function ReviewContainerPage(): JSX.Element {
       }
       setPayload(response);
       setIsLoading(false);
-      setInfoMessage(response.scenario === 'misc' ? response.summaryMessage : '');
+      
+      // Check for error messages in the payload
+      if ('errorMessage' in response && response.errorMessage) {
+        setErrorMessage(response.errorMessage);
+        setInfoMessage('');
+      } else {
+        setInfoMessage(response.scenario === 'misc' ? response.summaryMessage : '');
+        setErrorMessage('');
+      }
     });
 
     return () => {
@@ -78,7 +87,13 @@ export function ReviewContainerPage(): JSX.Element {
               <p className="extraction-loading-label">{REVIEW_EXTRACTION_LOADING_LABEL}</p>
             </div>
           ) : null}
-          {!isLoading && infoMessage ? <article className="info-banner">{infoMessage}</article> : null}
+          {!isLoading && errorMessage ? (
+            <article className="error-banner">
+              <strong>Error:</strong> 
+              <span>{errorMessage}</span>
+            </article>
+          ) : null}
+          {!isLoading && infoMessage && !errorMessage ? <article className="info-banner">{infoMessage}</article> : null}
 
           {!isLoading && payload ? (
             <section className="review-preview-pane" aria-label="Document Preview">
@@ -99,7 +114,7 @@ export function ReviewContainerPage(): JSX.Element {
             </section>
           ) : null}
 
-          {!isLoading && payload?.scenario === 'ovd' ? (
+          {!isLoading && payload?.scenario === 'ovd' && !errorMessage ? (
             <ReviewOvd
               payload={payload}
               isLocked={isFieldsLocked}
@@ -116,7 +131,7 @@ export function ReviewContainerPage(): JSX.Element {
             />
           ) : null}
 
-          {!isLoading && payload?.scenario === 'text' ? (
+          {!isLoading && payload?.scenario === 'text' && !errorMessage ? (
             <ReviewText
               payload={payload}
               isLocked={isFieldsLocked}
@@ -133,7 +148,7 @@ export function ReviewContainerPage(): JSX.Element {
             />
           ) : null}
 
-          {!isLoading && payload?.scenario === 'form' ? (
+          {!isLoading && payload?.scenario === 'form' && !errorMessage ? (
             <ReviewForm
               payload={payload}
               isLocked={isFieldsLocked}
