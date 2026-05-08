@@ -2,7 +2,7 @@ type DashboardUploadBannerProps = {
   onUpload: () => void;
 };
 
-export function DashboardUploadBanner({ onUpload }: DashboardUploadBannerProps): JSX.Element {
+export function DashboardUploadBanner({ onUpload }: DashboardUploadBannerProps) {
   return (
     <section className="dashboard-ocr-banner">
       <div className="dashboard-ocr-banner-content">

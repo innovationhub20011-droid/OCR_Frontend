@@ -10,7 +10,7 @@ import { ReviewForm } from './ReviewForm';
 import { ReviewOvd } from './ReviewOvd';
 import { ReviewText } from './ReviewText';
 
-export function ReviewContainerPage(): JSX.Element {
+export function ReviewContainerPage() {
   const navigate = useNavigate();
   const user = useCurrentUser();
   const [isLoading, setIsLoading] = useState(true);
@@ -95,7 +95,7 @@ export function ReviewContainerPage(): JSX.Element {
           ) : null}
           {!isLoading && infoMessage && !errorMessage ? <article className="info-banner">{infoMessage}</article> : null}
 
-          {!isLoading && payload ? (
+          {!isLoading && payload && !errorMessage ? (
             <section className="review-preview-pane" aria-label="Document Preview">
               <h3>Document Preview</h3>
               {!payload.previewUrl ? <p>No preview available for this document.</p> : null}

@@ -10,7 +10,7 @@ type DashboardTopNavProps = {
   onNavigate: (label: string, route: string) => void;
 };
 
-export function DashboardTopNav({ items, activeLabel, onNavigate }: DashboardTopNavProps): JSX.Element {
+export function DashboardTopNav({ items, activeLabel, onNavigate }: DashboardTopNavProps) {
   return (
     <nav className="top-nav" aria-label="Primary Navigation">
       {items.map((item) => (

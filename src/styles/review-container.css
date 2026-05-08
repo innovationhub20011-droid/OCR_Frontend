@@ -122,9 +122,13 @@
   background: #f8d7da !important;
   color: #721c24 !important;
   border-radius: 10px;
-  padding: 12px 14px;
+  padding: 20px 24px;
   margin-bottom: 12px;
-  font-size: 0.9rem;
+  font-size: 1.2rem;
+  text-align: center;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .error-banner strong {

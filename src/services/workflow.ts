@@ -21,6 +21,8 @@ import {
 import { API_DEFAULT_UPLOAD_FILE_NAMES } from '../constants';
 import { buildStageSequence } from './workflowStageSequence.ts';
 
+const apiService = backendApiService;
+
 const wait = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 const CURRENT_SESSION_KEY = 'sbi-ocr-current-session';
 
@@ -280,8 +282,8 @@ export class ExtractionWorkflowService {
       this.currentFileBlob = fileBlob; // Store for later photo extraction
       console.log('[Workflow] Calling extract API for', ovdType, 'with extractPhoto:', session.extractPhoto, 'extractSignature:', session.extractSignature);
       const extractionResult = ovdType === 'pan'
-        ? await backendApiService.extractPan(fileBlob, session.fileName || API_DEFAULT_UPLOAD_FILE_NAMES.pan, session.extractPhoto, session.extractSignature)
-        : await backendApiService.extractAadhaar(fileBlob, session.fileName || API_DEFAULT_UPLOAD_FILE_NAMES.aadhaar, session.extractPhoto);
+        ? await apiService.extractPan(fileBlob, session.fileName || API_DEFAULT_UPLOAD_FILE_NAMES.pan, session.extractPhoto ?? false, session.extractSignature ?? false)
+        : await apiService.extractAadhaar(fileBlob, session.fileName || API_DEFAULT_UPLOAD_FILE_NAMES.aadhaar, session.extractPhoto ?? false);
       console.log('[Workflow] API extraction result:', extractionResult);
 
       const mappedFields = ovdType === 'pan'
@@ -570,7 +572,7 @@ export class ExtractionWorkflowService {
         const objectResponse = await fetch(session.previewUrl);
         if (objectResponse.ok) {
           const fileBlob = await objectResponse.blob();
-          const rawTextResult = await backendApiService.extractRawText(fileBlob, session.fileName || API_DEFAULT_UPLOAD_FILE_NAMES.handwritten);
+          const rawTextResult = await apiService.extractRawText(fileBlob, session.fileName || API_DEFAULT_UPLOAD_FILE_NAMES.handwritten);
           const extractedText = this.extractRawTextValue(rawTextResult);
           return {
             scenario: 'text',
@@ -856,7 +858,7 @@ export class ExtractionWorkflowService {
       }
 
       const fileBlob = await objectResponse.blob();
-      const apiResult = await backendApiService.extractAccountOpeningPage1(fileBlob, session.fileName || API_DEFAULT_UPLOAD_FILE_NAMES.accountOpeningPage1);
+      const apiResult = await apiService.extractAccountOpeningPage1(fileBlob, session.fileName || API_DEFAULT_UPLOAD_FILE_NAMES.accountOpeningPage1);
       return {
         ...payload,
         pages: this.mergeAccountOpeningPage1FromApi(payload.pages, apiResult)

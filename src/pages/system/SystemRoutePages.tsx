@@ -2,7 +2,7 @@ import { AppShell } from '../../components/AppShell';
 import { getShellProps } from '../../config/shell';
 import { useCurrentUser } from '../../hooks/useCurrentUser';
 
-export function ReportsPage(): JSX.Element {
+export function ReportsPage() {
   const user = useCurrentUser();
   return (
     <main className="reports-page">
@@ -15,7 +15,7 @@ export function ReportsPage(): JSX.Element {
   );
 }
 
-export function SettingsPage(): JSX.Element {
+export function SettingsPage() {
   const user = useCurrentUser();
   return (
     <main className="settings-page">

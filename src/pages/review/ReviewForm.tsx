@@ -11,7 +11,7 @@ export function ReviewForm({
   onSaveDraft,
   onSubmit,
   onEditRequested
-}: ReviewFormProps): JSX.Element {
+}: ReviewFormProps) {
   const [workingPayload, setWorkingPayload] = useState(payload);
   const [activePageIndex, setActivePageIndex] = useState(0);
   const [showSensitive, setShowSensitive] = useState<Record<string, boolean>>({});

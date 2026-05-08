@@ -18,9 +18,11 @@ export type PanExtractionResponse = {
   photo?: string | Blob; // Base64 encoded photo or blob
   photoUrl?: string; // Data URL for photo
 } & Record<string, unknown>;
+
 export type AadhaarExtractionResponse = {
   face_image?: string; // Base64 data URL from API
 } & Record<string, unknown>;
+
 export type RawTextExtractionResponse = {
   document_type?: string;
   file_name?: string;

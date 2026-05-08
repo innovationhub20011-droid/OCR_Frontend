@@ -6,7 +6,7 @@ type DashboardHeaderProps = {
   onLogout: () => void;
 };
 
-export function DashboardHeader({ userName, userRole, onLogout }: DashboardHeaderProps): JSX.Element {
+export function DashboardHeader({ userName, userRole, onLogout }: DashboardHeaderProps) {
   return (
     <header className="top-header">
       <div className="brand-area">

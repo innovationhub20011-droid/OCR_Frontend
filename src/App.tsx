@@ -12,7 +12,7 @@ import {
   VerificationQueuePage
 } from './pages';
 
-export default function App(): JSX.Element {
+export default function App() {
   return (
     <Routes>
       <Route path={APP_ROUTES.login} element={<LoginPage />} />

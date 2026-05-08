@@ -5,7 +5,7 @@ import { useCurrentUser } from '../../hooks/useCurrentUser';
 import { extractionWorkflowService } from '../../services/workflow';
 import { VerificationRecord } from '../../types/app';
 
-export function VerificationQueuePage(): JSX.Element {
+export function VerificationQueuePage() {
   const user = useCurrentUser();
   const [rows, setRows] = useState<VerificationRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -63,7 +63,7 @@ export function VerificationQueuePage(): JSX.Element {
   );
 }
 
-export function CheckerQueuePage(): JSX.Element {
+export function CheckerQueuePage() {
   const user = useCurrentUser();
   const [rows, setRows] = useState<VerificationRecord[]>([]);
   const [rejectComments, setRejectComments] = useState<Record<string, string>>({});

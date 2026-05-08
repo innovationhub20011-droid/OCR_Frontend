@@ -5,7 +5,7 @@ import { APP_ROUTES, DOC_ASSET_MAP, DOCUMENT_SECTIONS } from '../../constants';
 import { getShellProps } from '../../config/shell';
 import { useCurrentUser } from '../../hooks/useCurrentUser';
 
-export function DocumentSelectorPage(): JSX.Element {
+export function DocumentSelectorPage() {
   const navigate = useNavigate();
   const user = useCurrentUser();
   const [loading, setLoading] = useState(true);

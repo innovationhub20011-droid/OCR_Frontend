@@ -10,7 +10,7 @@ export function ReviewText({
   onSaveDraft,
   onSubmit,
   onEditRequested
-}: ReviewTextProps): JSX.Element {
+}: ReviewTextProps) {
   const [blocks, setBlocks] = useState(payload.blocks);
   const [selectedBlockId, setSelectedBlockId] = useState(payload.blocks[0]?.id || '');
 

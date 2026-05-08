@@ -11,7 +11,7 @@ export function ReviewOvd({
   onSaveDraft,
   onSubmit,
   onEditRequested
-}: ReviewOvdProps): JSX.Element {
+}: ReviewOvdProps) {
   const [fields, setFields] = useState(payload.fields);
   const [showSensitive, setShowSensitive] = useState<Record<string, boolean>>({});
   const [extractedPhoto, setExtractedPhoto] = useState<string | null>(payload.extractedPhoto || null);

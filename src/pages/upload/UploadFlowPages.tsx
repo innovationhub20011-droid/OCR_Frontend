@@ -6,7 +6,7 @@ import { getShellProps } from '../../config/shell';
 import { useCurrentUser } from '../../hooks/useCurrentUser';
 import { extractionWorkflowService } from '../../services/workflow';
 
-export function UploadProcessingPage(): JSX.Element {
+export function UploadProcessingPage() {
   const navigate = useNavigate();
   const user = useCurrentUser();
   const [params] = useSearchParams();

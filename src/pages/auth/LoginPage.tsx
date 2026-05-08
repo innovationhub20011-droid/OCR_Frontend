@@ -4,7 +4,7 @@ import { APP_ROUTES } from '../../constants';
 import { authSessionService, mockAuthApiService } from '../../services/auth';
 import sbiLogo from '../../assets/sbi_logo_launch.jpg';
 
-export function LoginPage(): JSX.Element {
+export function LoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('maker.sbi@bank.com');
   const [password, setPassword] = useState('Maker@123');

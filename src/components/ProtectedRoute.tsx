@@ -4,7 +4,7 @@ import { APP_ROUTES } from '../constants';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { AppUserRole } from '../types/app';
 
-export function ProtectedRoute({ allowedRoles, children }: { allowedRoles?: AppUserRole[]; children: ReactNode }): JSX.Element {
+export function ProtectedRoute({ allowedRoles, children }: { allowedRoles?: AppUserRole[]; children: ReactNode }) {
   const user = useCurrentUser();
   if (!user) {
     return <Navigate to={APP_ROUTES.login} replace />;

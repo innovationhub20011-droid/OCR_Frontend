@@ -8,7 +8,7 @@ import { DashboardHeader } from './components/DashboardHeader';
 import { DashboardTopNav } from './components/DashboardTopNav';
 import { DashboardUploadBanner } from './components/DashboardUploadBanner';
 
-export function DashboardPage(): JSX.Element {
+export function DashboardPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const user = useCurrentUser();

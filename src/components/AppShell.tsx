@@ -21,7 +21,7 @@ export function AppShell({
   footerLeft,
   footerRight,
   children
-}: AppShellProps): JSX.Element {
+}: AppShellProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const activeLabel = getTopNavActiveLabel(location.pathname);
